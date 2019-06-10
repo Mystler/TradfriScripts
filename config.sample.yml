@@ -1,0 +1,4 @@
+coap_client: D:\Dev\libcoap\bin\coap-client
+username: TradfriScripts
+gateway_ip: 192.168.0.123
+gateway_code: 0123456789ABCDEF
