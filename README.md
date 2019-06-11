@@ -35,7 +35,7 @@ groups.each do |g|
     d.name # Returns the name of the device.
     d.on? # Returns true if powered or false if not.
 
-    # Setters
+    # Commands
     d.on
     d.off
     d.toggle # Switch on if off or off if on
@@ -47,10 +47,12 @@ groups.each do |g|
     d.dim # Get/set brightness as a relative value from 0.0 to 1.0.
     d.fade = 3 # Get/set the time for color transitions in seconds.
   end
+
+  g.dim = 0.2 # Tradfri::Group is actually a subclass of Device, so you can use all commands directly on a group.
 end
 ```
 
-Getters will return 0 values if the corresponding fields do not exist for a given device type. Note that getters always request the latest data from the network, so cache data in variables if a new request is not necessary.
+Getters will return 0 values if the corresponding fields do not exist for a given device type or for groups. Note that getters always request the latest data from the network, so cache data in variables if a new request is not necessary.
 
 When writing sequences, remember you can use `sleep(seconds)` to wait between commands or until transitions finish.
 

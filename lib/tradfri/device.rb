@@ -10,7 +10,7 @@ module Tradfri
     def initialize(client, id)
       @client = client
       @id = id
-      @path = "#{PATH}/#{@id}"
+      @path = "#{self.class::PATH}/#{@id}"
       @fade = 1
     end
 
@@ -55,10 +55,10 @@ module Tradfri
     end
 
     def color=(arr)
-      set_control({"5709" => arr[0], "5710" => arr[1]})
+      set_control({"5709" => arr[0], "5710" => arr[1], "5712" => fade * 10})
     end
 
-    private
+    protected
 
     def get_control(field)
       data["3311"]&.first&.dig(field) || 0
@@ -70,7 +70,6 @@ module Tradfri
     end
 
     def set_control(hash)
-      hash["5712"] = fade * 10
       @client.put(@path, {"3311" => [hash]})
     end
   end

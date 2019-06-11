@@ -1,24 +1,9 @@
 require_relative "client"
+require_relative "device"
 
 module Tradfri
-  class Group
+  class Group < Device
     PATH = "15004"
-
-    attr_reader :id
-
-    def initialize(client, id)
-      @client = client
-      @id = id
-      @path = "#{PATH}/#{@id}"
-    end
-
-    def data
-      @client.get(@path)
-    end
-
-    def name
-      data["9001"]
-    end
 
     def devices
       list = []
@@ -26,6 +11,12 @@ module Tradfri
         list.push(Device.new(@client, id))
       end
       return list
+    end
+
+    protected
+
+    def set_control(hash)
+      @client.put(@path, hash)
     end
   end
 end
