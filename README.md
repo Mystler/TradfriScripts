@@ -63,4 +63,6 @@ Getters will return 0 values if the corresponding fields do not exist for a give
 
 When writing sequences, remember you can use `sleep(seconds)` to wait between commands or until transitions finish.
 
-Check out my scripts for ideas.
+Check out my scripts for ideas or further examples.
+
+- `DayNightCycle.rb`: Fades through a day-night color simulation with 1 day in 30 minutes.
