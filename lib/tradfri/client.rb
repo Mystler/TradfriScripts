@@ -6,13 +6,12 @@ require_relative "device"
 require_relative "group"
 
 module Tradfri
-  Config = YAML.load(File.read("config.yml"))
-  FILE_CACHE = "psk.cache"
-
   class Client
-    def initialize
+    def initialize(config_file = "tradfri.yml", psk_file = "tradfri.psk")
+      @psk_file = psk_file
+      @config = YAML.load(File.read(config_file))
       begin
-        @psk = File.read(FILE_CACHE)
+        @psk = File.read(psk_file)
       rescue => exception
         @psk = "notfound"
       end
@@ -36,21 +35,21 @@ module Tradfri
     end
 
     def get(path)
-      coap("get", Config["username"], @psk, path)
+      coap("get", @config["username"], @psk, path)
     end
 
     def put(path, payload)
-      coap("put", Config["username"], @psk, path, payload)
+      coap("put", @config["username"], @psk, path, payload)
     end
 
     private
 
     def coap(type, user, key, path, payload = nil)
-      url = "coaps://#{Config["gateway_ip"]}:5684/#{path}"
+      url = "coaps://#{@config["gateway_ip"]}:5684/#{path}"
       args = ["-m", type, "-u", user, "-k", key]
       args.push("-e", JSON.generate(payload)) if payload != nil
       args.push(url)
-      out, status = Open3.capture2e(Config["coap_client"], *args)
+      out, status = Open3.capture2e(@config["coap_client"], *args)
       begin
         json = JSON.parse(out)
       rescue JSON::ParserError
@@ -60,11 +59,11 @@ module Tradfri
     end
 
     def register
-      pl = {"9090": "#{Config["username"]}"}
-      resp = coap("post", "Client_identity", Config["gateway_code"], "15011/9063", pl)
+      pl = {"9090": "#{@config["username"]}"}
+      resp = coap("post", "Client_identity", @config["gateway_code"], "15011/9063", pl)
       if resp.is_a?(Hash)
         @psk = resp["9091"]
-        File.open(FILE_CACHE, "w") do |file|
+        File.open(@psk_file, "w") do |file|
           file.write @psk
         end
         puts "Registered"

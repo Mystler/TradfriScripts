@@ -9,10 +9,15 @@ Prerequisites
 Assuming you have Ruby installed and got the prerequisite gems via bundler, you also need the coap-client from [libcoap](https://github.com/obgm/libcoap).
 Make sure it supports DTLS. Compiling that one can be a bit tedious, especially on Windows, but is not in the scope of this README.
 
-Then, copy the file `config.sample.yml` to `config.yml` and edit the values to match your needs.
+Then, copy the file `tradfri.sample.yml` to `tradfri.yml` and edit the values to match your needs.
 - `coap_client` should be set to your coap-client executable.
+- `username` is an arbitrary identifier for your app. If you just registered a username and missed the key, registration may fail and you have to use another one.
 - `gateway_code` is the code on the bottom of the Trådfri gateway.
 - `gateway_ip` is the gateway's IP address. These scripts do not support automatic discovery. Check your router's DHCP list for the gateway, or so.
+
+Connecting to the gateway for the first time will request a personal key for the username you specified. This key will be stored in `tradfri.psk` by default.
+
+In custom scripts, you can also specify other filenames for the config and key files. (See example below.)
 
 Usage
 -----
@@ -25,6 +30,8 @@ Quick explanation in code:
 require_relative "lib/tradfri"
 
 t = Tradfri::Client.new # Initializes the connection, error handling if sth goes wrong may not be great.
+t_alt = Tradfri::Client.new("config.yml", "cache.psk") # You can also change the defaults for config and key cache.
+
 devices = t.devices # Returns all devices as an array of Tradfri::Device.
 groups = t.groups # Returns all groups as an array of Tradfri::Group.
 groups.each do |g|
