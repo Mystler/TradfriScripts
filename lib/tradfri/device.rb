@@ -61,16 +61,21 @@ module Tradfri
     protected
 
     def get_control(field)
-      data["3311"]&.first&.dig(field) || 0
+      data["3311"]&.first&.dig(field) || data["3312"]&.first&.dig(field) || 0
     end
 
     def get_controls(*fields)
-      cdata = data["3311"]&.first
+      cdata = data["3311"]&.first || data["3312"]&.first
       fields.map { |f| cdata&.dig(f) || 0 }
     end
 
     def set_control(hash)
-      @client.put(@path, {"3311" => [hash]})
+      cdata = data
+      if cdata["3311"]
+        @client.put(@path, {"3311" => [hash]})
+      elsif cdata["3312"]
+        @client.put(@path, {"3312" => [hash]})
+      end
     end
   end
 end
