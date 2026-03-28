@@ -12,10 +12,18 @@ module Tradfri
       @id = id
       @path = "#{self.class::PATH}/#{@id}"
       @fade = 1
+      @data = nil
+    end
+
+    def refresh
+      @data = @client.get(@path)
     end
 
     def data
-      @client.get(@path)
+      unless @data
+        refresh
+      end
+      return @data
     end
 
     def name

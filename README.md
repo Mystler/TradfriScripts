@@ -46,6 +46,7 @@ groups.each do |g|
     d.on
     d.off
     d.toggle # Switch on if off or off if on
+    d.refresh # Sync the locally stored state of the device. Call this if you've changed things (e.g. before toggle after you've already changed on/off)
 
     # Accessors (can use to get or set)
     d.color # Returns an array of x and y values for the color. These are integers in range 0 to 65535.
